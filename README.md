@@ -1,2 +1,4 @@
-# bowlingkata-phil
-bowlingkata with phil as driver
+BowlingKata
+===========
+
+** TODO: Add description **
