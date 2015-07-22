@@ -13,6 +13,7 @@ defmodule BowlingKata do
   def parse_input(rolls) do
     game = parse_frames(String.graphemes(rolls))
     game.frames
+      |> Enum.reverse
   end
 
   def parse_frames(rolls) do
@@ -29,17 +30,34 @@ defmodule BowlingKata do
   end
 
   defp parse_frame(%BowlingGame{frames: frames}, ["-", "-" | rest]) do
-    game = %BowlingGame{frames: [%Frame{type: :strike, rolls: [10]} | frames]}
+    game = %BowlingGame{frames: [%Frame{type: :scored, rolls: [0,0]} | frames]}
+    parse_frame game, rest
+  end
+
+  defp parse_frame(%BowlingGame{frames: frames}, [r1, "-" | rest]) do
+    {rvalue, _} = Integer.parse(r1)
+    game = %BowlingGame{frames: [%Frame{type: :scored, rolls: [rvalue, 0]} | frames]}
+    parse_frame game, rest
+  end
+
+  defp parse_frame(%BowlingGame{frames: frames}, ["-", r2 | rest]) do
+    {rvalue, _} = Integer.parse(r2)
+    game = %BowlingGame{frames: [%Frame{type: :scored, rolls: [0,rvalue]} | frames]}
     parse_frame game, rest
   end
 
   defp parse_frame(%BowlingGame{frames: frames}, [r1, "/" | rest]) do
-    game = %BowlingGame{frames: [%Frame{type: :spare, rolls: [r1]} | frames]}
+    {rvalue, _} = Integer.parse(r1)
+    game = %BowlingGame{frames: [%Frame{type: :spare, rolls: [rvalue]} | frames]}
     parse_frame game, rest
   end
 
   defp parse_frame(%BowlingGame{frames: frames}, [r1, r2 | rest]) do
-    game = %BowlingGame{frames: [%Frame{type: :spare, rolls: [r1, r2]} | frames]}
+    {r1value, _} = Integer.parse(r1)
+    {r2value, _} = Integer.parse(r2)
+    game = %BowlingGame{
+      frames: [%Frame{type: :scored, rolls: [r1value, r2value]} | frames]
+    }
     parse_frame game, rest
   end
 end
