@@ -1,9 +1,9 @@
 defmodule Frame do
-  defstruct number: 1, type: :partial, rolls: []
+  defstruct type: :partial, rolls: []
 end
 
 defmodule BowlingGame do
-  defstruct current_frame: %Frame{}, frames: []
+  defstruct frames: []
 end
 
 defmodule BowlingKata do
