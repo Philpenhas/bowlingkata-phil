@@ -40,6 +40,11 @@ defmodule BowlingKataTest do
     assert %Frame{type: :strike, rolls: [10]} = frame
   end
 
+  test "parses a strike as a list of 1 frames lower case x" do
+    assert [frame] = BowlingKata.parse_input("x")
+    assert %Frame{type: :strike, rolls: [10]} = frame
+  end
+
   test "parses a spare as a list of 1 frame" do
     assert [frame] = BowlingKata.parse_input("3/")
     assert %Frame{type: :spare, rolls: [3, 7]} = frame
