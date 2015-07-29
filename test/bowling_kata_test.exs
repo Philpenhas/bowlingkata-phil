@@ -11,7 +11,7 @@ defmodule BowlingKataTest do
 
   test "invalid game string rasies MatchError" do
     assert_raise FunctionClauseError, fn ->
-      BowlingKata.parse_input("xx/")
+      BowlingKata.parse_input("XX/")
     end
   end
 
