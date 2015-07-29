@@ -106,6 +106,6 @@ defmodule BowlingKataTest do
     frames = BowlingKata.parse_input("34531317345322332332")
 
     assert 10 = Enum.count(frames)
-    assert Enum.all?(frames, &(&1.type == :strike))
+    assert Enum.all?(frames, &(&1.type == :scored))
   end
 end
