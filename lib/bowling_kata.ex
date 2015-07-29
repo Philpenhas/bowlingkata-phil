@@ -11,8 +11,11 @@ defmodule BowlingKata do
   def parse_input(""), do: []
   def parse_input(:nil), do: []
   def parse_input(rolls) do
-    game = parse_frames(String.graphemes(rolls))
-    game.frames
+    rolls
+      |> String.upcase
+      |> String.graphemes
+      |> parse_frames
+      |> (&(&1.frames)).()
       |> Enum.reverse
   end
 
@@ -48,7 +51,8 @@ defmodule BowlingKata do
 
   defp parse_frame(%BowlingGame{frames: frames}, [r1, "/" | rest]) do
     {rvalue, _} = Integer.parse(r1)
-    game = %BowlingGame{frames: [%Frame{type: :spare, rolls: [rvalue]} | frames]}
+    frame = %Frame{type: :spare, rolls: [rvalue, 10 - rvalue]}
+    game = %BowlingGame{frames: [frame | frames]}
     parse_frame game, rest
   end
 

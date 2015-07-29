@@ -9,20 +9,40 @@ defmodule BowlingKataTest do
     assert [] = BowlingKata.parse_input(:nil)
   end
 
-  test "parses strike as a list of 1 strike frame" do
-    assert [%Frame{type: :strike}] = BowlingKata.parse_input("X")
+  test "invalid game string rasies MatchError" do
+    assert_raise FunctionClauseError, fn ->
+      BowlingKata.parse_input("xx/")
+    end
   end
 
-  test "parses 2 misses as a list of 1 empty frame" do
-    assert [%Frame{type: :scored}] = BowlingKata.parse_input("--")
+  test "parses a miss and roll of 5 as 0 and 5" do
+    assert [frame] = BowlingKata.parse_input("-5")
+    assert %Frame{type: :scored, rolls: [0, 5]} = frame
   end
 
-  test "parses miss and a roll as a list of 1 plain frame" do
-    assert [%Frame{type: :scored}] = BowlingKata.parse_input("-4")
+  test "parses a roll of 5 and a miss as 5 and 0" do
+    assert [frame] = BowlingKata.parse_input("5-")
+    assert %Frame{type: :scored, rolls: [5, 0]} = frame
   end
 
-  test "parses a spare as a list of 1 spare frame" do
-    assert [%Frame{type: :spare}] = BowlingKata.parse_input("3/")
+  test "parses a roll of two misses as 0 and 0" do
+    assert [frame] = BowlingKata.parse_input("--")
+    assert %Frame{type: :scored, rolls: [0, 0]} = frame
+  end
+
+  test "parses 2 rolls as a list of 1 frame" do
+    assert [frame] = BowlingKata.parse_input("35")
+    assert %Frame{type: :scored, rolls: [3, 5]} = frame
+  end
+
+  test "parses a strike as a list of 1 frames" do
+    assert [frame] = BowlingKata.parse_input("X")
+    assert %Frame{type: :strike, rolls: [10]} = frame
+  end
+
+  test "parses a spare as a list of 1 frame" do
+    assert [frame] = BowlingKata.parse_input("3/")
+    assert %Frame{type: :spare, rolls: [3, 7]} = frame
   end
 
   test "parses a strike and scored frames as a list of 2 frames respectively" do
@@ -37,12 +57,12 @@ defmodule BowlingKataTest do
 
   test "parses a strike and spare frames as a list of 2 frames respectively" do
     assert [strike, spare] = BowlingKata.parse_input("X4/")
-    assert [%Frame{type: :strike}, %Frame{type: :spare}] = [strike, spare] 
+    assert [%Frame{type: :strike}, %Frame{type: :spare}] = [strike, spare]
   end
 
   test "parses a scored and spare frames as a list of 2 frames respectively" do
     assert [scored, spare] = BowlingKata.parse_input("424/")
-    assert [%Frame{type: :scored}, %Frame{type: :spare}] = [scored, spare] 
+    assert [%Frame{type: :scored}, %Frame{type: :spare}] = [scored, spare]
   end
 
   test "parses a scored and scored frames as a list of 2 frames respectively" do
@@ -50,21 +70,23 @@ defmodule BowlingKataTest do
     assert [%Frame{type: :scored}, %Frame{type: :scored}] = [scored1, scored2]
   end
 
-  test "parses a miss and roll of 5 as 0 and 5" do
-    assert [frame] = BowlingKata.parse_input("-5")
-    assert %Frame{type: :scored, rolls: [0, 5]} = frame
-  end
-
-  test "parses a roll of 5 and a miss as 5 and 0" do
-    assert [frame] = BowlingKata.parse_input("5-")
-    assert %Frame{type: :scored, rolls: [5, 0]} = frame
-  end
-
-  test "parses 2 rolls as a list of 1 frame" do
-    assert [_] = BowlingKata.parse_input("35")
-  end
-
   test "parses 2 strikes as a list of 2 frames" do
-    assert [_, _] = BowlingKata.parse_input("XX")
+    assert [frame1, frame2] = BowlingKata.parse_input("XX")
+    assert %Frame{type: :strike, rolls: [10]} = frame1
+    assert %Frame{type: :strike, rolls: [10]} = frame2
+  end
+
+  test "perfect game parses into 10 frames of strikes" do
+    frames = BowlingKata.parse_input("XXXXXXXXXXXX")
+
+    assert 10 = Enum.count(frames)
+    assert Enum.all(frames, &(&1.type == :strike))
+  end
+
+  test "perfect game parses into 10 frames" do
+    frames = BowlingKata.parse_input("XXXXXXXXX5/X")
+
+    assert 10 = Enum.count(frames)
+    assert Enum.all(frames, &(&1.type == :strike))
   end
 end
