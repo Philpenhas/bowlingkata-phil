@@ -83,7 +83,7 @@ defmodule BowlingKataTest do
 
   test "perfect game parses into 10 frames of strikes" do
     frames = BowlingKata.parse_input("XXXXXXXXXXXX")
-    tenth_frame = frames
+    [tenth_frame] = frames
       |> Enum.reverse
       |> Enum.take 1
 
@@ -94,7 +94,7 @@ defmodule BowlingKataTest do
 
   test "a normal game with spare on 10th frame with strike as last roll parses into 10 frames" do
     frames = BowlingKata.parse_input("3453131734532233233/X")
-    tenth_frame = frames
+    [tenth_frame] = frames
       |> Enum.reverse
       |> Enum.take 1
 
@@ -105,7 +105,7 @@ defmodule BowlingKataTest do
 
   test "a normal game with spare and simple score on 10th frame game parses into 10 frames" do
     frames = BowlingKata.parse_input("3453131734532233233/5")
-    tenth_frame = frames
+    [tenth_frame] = frames
       |> Enum.reverse
       |> Enum.take 1
 
