@@ -14,54 +14,50 @@ defmodule BowlingKata do
     rolls
       |> String.upcase
       |> String.graphemes
-      |> parse_frames
+      |> parse_frame(%BowlingGame{})
       |> (&(&1.frames)).()
       |> Enum.reverse
   end
 
-  def parse_frames(rolls) do
-    parse_frame %BowlingGame{}, rolls
-  end
-
-  defp parse_frame(game, []) do
+  defp parse_frame([], game) do
     game
   end
 
-  defp parse_frame(%BowlingGame{frames: frames}, ["X" | rest]) do
+  defp parse_frame(["X" | rest], %BowlingGame{frames: frames}) do
     game = %BowlingGame{frames: [%Frame{type: :strike, rolls: [10]} | frames]}
-    parse_frame game, rest
+    parse_frame rest, game
   end
 
-  defp parse_frame(%BowlingGame{frames: frames}, ["-", "-" | rest]) do
+  defp parse_frame(["-", "-" | rest], %BowlingGame{frames: frames}) do
     game = %BowlingGame{frames: [%Frame{type: :scored, rolls: [0,0]} | frames]}
-    parse_frame game, rest
+    parse_frame rest, game
   end
 
-  defp parse_frame(%BowlingGame{frames: frames}, [r1, "-" | rest]) do
+  defp parse_frame([r1, "-" | rest], %BowlingGame{frames: frames}) do
     {rvalue, _} = Integer.parse(r1)
     game = %BowlingGame{frames: [%Frame{type: :scored, rolls: [rvalue, 0]} | frames]}
-    parse_frame game, rest
+    parse_frame rest, game
   end
 
-  defp parse_frame(%BowlingGame{frames: frames}, ["-", r2 | rest]) do
+  defp parse_frame(["-", r2 | rest], %BowlingGame{frames: frames}) do
     {rvalue, _} = Integer.parse(r2)
     game = %BowlingGame{frames: [%Frame{type: :scored, rolls: [0,rvalue]} | frames]}
-    parse_frame game, rest
+    parse_frame rest, game
   end
 
-  defp parse_frame(%BowlingGame{frames: frames}, [r1, "/" | rest]) do
+  defp parse_frame([r1, "/" | rest], %BowlingGame{frames: frames}) do
     {rvalue, _} = Integer.parse(r1)
     frame = %Frame{type: :spare, rolls: [rvalue, 10 - rvalue]}
     game = %BowlingGame{frames: [frame | frames]}
-    parse_frame game, rest
+    parse_frame rest, game
   end
 
-  defp parse_frame(%BowlingGame{frames: frames}, [r1, r2 | rest]) do
+  defp parse_frame([r1, r2 | rest], %BowlingGame{frames: frames}) do
     {r1value, _} = Integer.parse(r1)
     {r2value, _} = Integer.parse(r2)
     game = %BowlingGame{
       frames: [%Frame{type: :scored, rolls: [r1value, r2value]} | frames]
     }
-    parse_frame game, rest
+    parse_frame rest, game
   end
 end
