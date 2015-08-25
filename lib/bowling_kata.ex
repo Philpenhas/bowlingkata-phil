@@ -1,5 +1,5 @@
 defmodule Frame do
-  defstruct type: :partial, rolls: []
+  defstruct type: :scored, rolls: []
 end
 
 defmodule BowlingGame do
