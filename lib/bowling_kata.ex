@@ -29,6 +29,14 @@ defmodule BowlingKata do
     parse_frame rest, game, 10 + 1
   end
 
+  defp parse_frame(["X", r1, "/" | rest], %BowlingGame{frames: frames}, 10) do
+    {rvalue, _} = Integer.parse(r1)
+
+    frame = %Frame{type: :strike, rolls: [10, rvalue, 10 - rvalue] }
+    game = %BowlingGame{frames: [frame | frames]}
+    parse_frame rest, game, 10 + 1
+  end
+
   defp parse_frame(["X", r1, r2 | rest], %BowlingGame{frames: frames}, 10) do
     {rvalue1, _} = Integer.parse(r1)
     {rvalue2, _} = Integer.parse(r2)
