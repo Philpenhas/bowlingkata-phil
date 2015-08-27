@@ -7,7 +7,8 @@ defmodule BowlingKata.Mixfile do
      elixir: "~> 1.0",
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
-     deps: deps]
+     deps: deps,
+     test_coverage: [tool: CoverEx]]
   end
 
   # Configuration for the OTP application
